@@ -18,7 +18,7 @@ the route to bootstrapping is pretty much paved. This is the nano=c-c language I
 program ::= (vardecl | fundecl)*
 
 vardecl ::= type '*'? IDENTIFIER ('[' NUMBER ']')? (',' '*'? IDENTIFIER ('[' NUMBER ']')?)* ';'\
-          | 'enum' IDENTIFIER? '{' IDENTIFIER ('=' NUMBER)?  (',' IDENTIFIER ('=' NUMBER)?)* '}' IDENTIFIER? ';'
+&nbsp;&nbsp;&nbsp;&nbsp;           | 'enum' IDENTIFIER? '{' IDENTIFIER ('=' NUMBER)?  (',' IDENTIFIER ('=' NUMBER)?)* '}' IDENTIFIER? ';'
 
 fundecl ::= type '*'? IDENTIFIER '(' args ')' (stmt | ';')
 
@@ -36,10 +36,10 @@ stmt ::= 'if'  '(' expr ')' stmt ('else' stmt)?\
 type ::= 'int' | 'char' | 'void'
 
 expr ::= expr binop expr\
-       | unop expr\
-       | '(' expr ')'\
-       | IDENTIFIER ('++'|'--')?\
-       | IDENTIFIER '(' expr (',' expr)* ')'\
+&nbsp;&nbsp;&nbsp;&nbsp;        | unop expr\
+&nbsp;&nbsp;&nbsp;&nbsp;        | '(' expr ')'\
+&nbsp;&nbsp;&nbsp;&nbsp;        | IDENTIFIER ('++'|'--')?\
+&nbsp;&nbsp;&nbsp;&nbsp;        | IDENTIFIER '(' expr (',' expr)* ')'\
 
 binop ::= '=' | '<' | '>=' | '==' | '!=' | '+' | '-' | '*' | '/' | '||' | '&&' | '|' | '&' | '^' | '<<' | '>>'
 
