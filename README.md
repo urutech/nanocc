@@ -43,7 +43,7 @@ expr ::= expr binop expr\
 
 binop ::= '=' | '<' | '>=' | '==' | '!=' | '+' | '-' | '*' | '/' | '||' | '&&' | '|' | '&' | '^' | '<<' | '>>'
 
-unop ::= '++' | '--' | '*' | '&' | '-' | '+' | '!' | '~'``
+unop ::= '++' | '--' | '*' | '&' | '-' | '+' | '!' | '~'`
 
 
 Obviously this language would have some major restrictions.
