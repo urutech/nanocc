@@ -25,13 +25,13 @@ fundecl ::= type '*'? IDENTIFIER '(' args ')' (stmt | ';')
 args ::= 'void' | type '*'? IDENTIFER ('['']')? (',' type '*'? IDENTIFER ('['']')?)*
 
 stmt ::= 'if'  '(' expr ')' stmt ('else' stmt)?\
->       | while  '(' expr ')' stmt\
->       | do stmt while  '(' expr ')' ';'\
->       | '{' vardecl* stmt* '}'\
->       | 'return'? expr? ';'\
->       | IDENTIFER ':' stmt\
->       | 'continue' ';'\
->       | 'break' ';'
+&nbsp;&nbsp;&nbsp;&nbsp;       | while  '(' expr ')' stmt\
+&nbsp;&nbsp;&nbsp;&nbsp;       | do stmt while  '(' expr ')' ';'\
+&nbsp;&nbsp;&nbsp;&nbsp;       | '{' vardecl* stmt* '}'\
+&nbsp;&nbsp;&nbsp;&nbsp;       | 'return'? expr? ';'\
+&nbsp;&nbsp;&nbsp;&nbsp;       | IDENTIFER ':' stmt\
+&nbsp;&nbsp;&nbsp;&nbsp;       | 'continue' ';'\
+&nbsp;&nbsp;&nbsp;&nbsp;       | 'break' ';'
 
 type ::= 'int' | 'char' | 'void'
 
