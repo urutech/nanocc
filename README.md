@@ -22,7 +22,7 @@ vardecl ::= type '*'? IDENTIFIER ('[' NUMBER ']')? (',' '*'? IDENTIFIER ('[' NUM
 
 fundecl ::= type '*'? IDENTIFIER '(' args ')' (stmt | ';')
 
-args ::= 'void' | type '`*`'? IDENTIFER ('['']')? (',' type '*'? IDENTIFER ('['']')?)*
+args ::= 'void' | type '*' ? IDENTIFER ('['']')? (',' type '*'? IDENTIFER ('['']')?)*
 
 stmt ::= 'if'  '(' expr ')' stmt ('else' stmt)?\
 &nbsp;&nbsp;&nbsp;&nbsp;       | while  '(' expr ')' stmt\
