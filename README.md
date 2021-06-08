@@ -44,3 +44,14 @@ expr ::= expr binop expr\
 binop ::= '=' | '<' | '>=' | '==' | '!=' | '+' | '-' | '*' | '/' | '||' | '&&' | '|' | '&' | '^' | '<<' | '>>'
 
 unop ::= '++' | '--' | '*' | '&' | '-' | '+' | '!' | '~'
+
+
+Obviously this language would have some major restrictions.
+* No other data types besides int, char and void. No unsigned, short, struct or union.
+* Only pointer to basic types (int, char, void) or array of pointers
+* No multi dimensional array
+* No for loops
+* No switch statement
+* No static keyword and therefore also no local variables with global storage class
+* no keywords such as register, volatile and the like
+*
