@@ -69,7 +69,7 @@ The reason not to support goto and labels is, beside the fact that they are unne
 
 The expression parser is implemented as an operator precedence parser based on the shunting yard algorithm. That is the reason why the above listed grammer does only say "normal C expression". I think that the expression parser is pretty complete incl. recursive funtion calls, pointer and array arithmetic and pre- and postfix operations. What is not implemented is the comma operator (except in function arguments, of course), because that operaor is seldomly used besides in for loops. And that is also the reason to not implement for loops as well - and while and do/while are covering all loop types required.
 
-##Implementation design of nanocc
+## Implementation design of nanocc
 
 nannocc is a nano-c compiler written in nano-c, that can compile itself. Of course any C compiler will be able to compile nanocc as well, since nano-c is a subset of C. The implementation is in the file nanocc.c. It's a prgram that reads from stdin and writes to stdout. This is considered to be the easiest approach that does not have to deal with opening and closing files, printing error, if the file is not found and so on.
 
