@@ -53,3 +53,9 @@ Obviously this language would have some major restrictions:
 * No goto and labels
 * No initialization not for global and nor for local variables
 * No sizeof
+* No error text but error numbers and the compiler stops after the first error
+* No preprocessor
+
+Seems like a lot of NOs. So what can that nano-c language do? Well, obviously it is possible to write a compiler for nano-c in nano-c. And the limitations are bearable. For example is the absence of structs much less of a deal than one would think. Instead of ˋsymbol[symidx].nameˋ it is ˋsymbol_name[symidx]ˋ. So I'm using as many array variable as a struct has members.
+
+
