@@ -15,14 +15,14 @@ the first version of the nano-c compiler in C. Rewriting it to nano-c should be 
 the route to bootstrapping is pretty much paved. This is the nano=c-c language I came up with:
 
 
-`program ::= (vardecl | fundecl)*
+program ::= (vardecl | fundecl)*
 
 vardecl ::= type '*'? IDENTIFIER ('[' NUMBER ']')? (',' '*'? IDENTIFIER ('[' NUMBER ']')?)* ';'\
 &nbsp;&nbsp;&nbsp;&nbsp;           | 'enum' IDENTIFIER? '{' IDENTIFIER ('=' NUMBER)?  (',' IDENTIFIER ('=' NUMBER)?)* '}' IDENTIFIER? ';'
 
 fundecl ::= type '*'? IDENTIFIER '(' args ')' (stmt | ';')
 
-args ::= 'void' | type '*'? IDENTIFER ('['']')? (',' type '*'? IDENTIFER ('['']')?)*
+args ::= 'void' | type '`*`'? IDENTIFER ('['']')? (',' type '*'? IDENTIFER ('['']')?)*
 
 stmt ::= 'if'  '(' expr ')' stmt ('else' stmt)?\
 &nbsp;&nbsp;&nbsp;&nbsp;       | while  '(' expr ')' stmt\
@@ -43,7 +43,7 @@ expr ::= expr binop expr\
 
 binop ::= '=' | '<' | '>=' | '==' | '!=' | '+' | '-' | '*' | '/' | '||' | '&&' | '|' | '&' | '^' | '<<' | '>>'
 
-unop ::= '++' | '--' | '*' | '&' | '-' | '+' | '!' | '~'`
+unop ::= '++' | '--' | '*' | '&' | '-' | '+' | '!' | '~'
 
 
 Obviously this language would have some major restrictions.
