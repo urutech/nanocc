@@ -12,7 +12,7 @@ coding it in assembly but it should be considered doable. While I was thinking a
 
 nano-c should be a true subset of C. This means that a valid nano-c program should also be a valid C program. This would allow me to implement
 the first version of the nano-c compiler in C. Rewriting it to nano-c should be a trivial task (it's the same). And after nano-c can compile itself,
-the route to bootstrapping is pretty much paved. This is the nano=c-c language I came up with:
+the route to bootstrapping is pretty much paved. This is the nano-c language I came up with:
 
 
 ```
@@ -26,26 +26,25 @@ fundecl ::= type '*'? IDENTIFIER '(' args ')' (stmt | ';')
 args ::= 'void' | type '*'? IDENTIFER ('[]')? (',' type '*'? IDENTIFER ('[]')?)*
 
 stmt ::= 'if'  '(' expr ')' stmt ('else' stmt)?
-       | while  '(' expr ')' stmt
-       | do stmt while  '(' expr ')' ';'
+       | 'while'  '(' expr ')' stmt
+       | 'do' stmt 'while'  '(' expr ')' ';'
        | '{' vardecl* stmt* '}'
        | 'return'? expr? ';'
-       | IDENTIFER ':' stmt
        | 'continue' ';'
        | 'break' ';'
 
 type ::= 'int' | 'char' | 'void'
 
-expr ::= "Normal definition of C expressions"
+expr ::= "Normal C expressions"
 ```
 
 
-Obviously this language would have some major restrictions.
+Obviously this language would have some major restrictions:
 * No other data types besides int, char and void. No unsigned, short, struct or union.
 * Only pointer to basic types (int, char, void) or array of pointers
 * No multi dimensional array
-* No for loops
+* No for-loops
 * No switch statement
 * No static keyword and therefore also no local variables with global storage class
-* no keywords such as register, volatile and the like
-*
+* No keywords such as register, volatile and the like
+* No goto and labels
