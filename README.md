@@ -56,6 +56,8 @@ Obviously this language would have some major restrictions:
 * No error text but error numbers and the compiler stops after the first error
 * No preprocessor
 
-Seems like a lot of NOs. So what can that nano-c language do? Well, obviously it is possible to write a compiler for nano-c in nano-c. And the limitations are bearable. For example is the absence of structs much less of a deal than one would think. Instead of ˋsymbol[symidx].nameˋ it is ˋsymbol_name[symidx]ˋ. So I'm using as many array variable as a struct has members.
+Seems like a lot of NOs. So what can that nano-c language do? Well, obviously it is possible to write a compiler for nano-c in nano-c. And the limitations are bearable. For example is the absence of structs much less of a deal than one would think. Instead of ˋsymbol[symidx].nameˋ it is ˋsymbol_name[symidx]ˋ. So I'm using as many array variable as a struct has members. Not having the possibility to declare a variable and initialize it with a value at the same time is a disciplinary effort. Instead of ˋint x = 0;ˋ it is ˋint x; x = 0;ˋ. The reason for not implementing structs, multi dimensional arrays and initialization actually are related to each other. Initialization of global variables requires quite some code. This is especially true to match the initialization in curly brackets to combinations of structs in struct of arrays ... So I left the work to do that once and for all when the full type system is in place. Talking about the type system. That is one int describing the type of a variable. The lower 8 bits are reserved for the base type (int, char or void) and the remaining 24 bits are flags indicating ARRAY and/or POINTER.
+This is possible because only arrays of base type or pointer are allowed but not pointer to arrays. Therefore if both flags are set (ARRAY and POINTER) then it is an array of pointers. And when only one of the two flags are set it's an array of a base type or a pointer to a base type.
+
 
 
