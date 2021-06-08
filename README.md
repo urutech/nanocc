@@ -18,28 +18,28 @@ the route to bootstrapping is pretty much paved. This is the nano=c-c language I
 ```program ::= (vardecl | fundecl)*
 
 vardecl ::= type '*'? IDENTIFIER ('[' NUMBER ']')? (',' '*'? IDENTIFIER ('[' NUMBER ']')?)* ';'\
-&nbsp;&nbsp;&nbsp;&nbsp;           | 'enum' IDENTIFIER? '{' IDENTIFIER ('=' NUMBER)?  (',' IDENTIFIER ('=' NUMBER)?)* '}' IDENTIFIER? ';'
+           | 'enum' IDENTIFIER? '{' IDENTIFIER ('=' NUMBER)?  (',' IDENTIFIER ('=' NUMBER)?)* '}' IDENTIFIER? ';'
 
 fundecl ::= type '*'? IDENTIFIER '(' args ')' (stmt | ';')
 
 args ::= 'void' | type '*' ? IDENTIFER ('['']')? (',' type '*'? IDENTIFER ('['']')?)*
 
 stmt ::= 'if'  '(' expr ')' stmt ('else' stmt)?\
-&nbsp;&nbsp;&nbsp;&nbsp;       | while  '(' expr ')' stmt\
-&nbsp;&nbsp;&nbsp;&nbsp;       | do stmt while  '(' expr ')' ';'\
-&nbsp;&nbsp;&nbsp;&nbsp;       | '{' vardecl* stmt* '}'\
-&nbsp;&nbsp;&nbsp;&nbsp;       | 'return'? expr? ';'\
-&nbsp;&nbsp;&nbsp;&nbsp;       | IDENTIFER ':' stmt\
-&nbsp;&nbsp;&nbsp;&nbsp;       | 'continue' ';'\
-&nbsp;&nbsp;&nbsp;&nbsp;       | 'break' ';'
+       | while  '(' expr ')' stmt\
+       | do stmt while  '(' expr ')' ';'\
+       | '{' vardecl* stmt* '}'\
+       | 'return'? expr? ';'\
+       | IDENTIFER ':' stmt\
+       | 'continue' ';'\
+       | 'break' ';'
 
 type ::= 'int' | 'char' | 'void'
 
 expr ::= expr binop expr\
-&nbsp;&nbsp;&nbsp;&nbsp;        | unop expr\
-&nbsp;&nbsp;&nbsp;&nbsp;        | '(' expr ')'\
-&nbsp;&nbsp;&nbsp;&nbsp;        | IDENTIFIER ('++'|'--')?\
-&nbsp;&nbsp;&nbsp;&nbsp;        | IDENTIFIER '(' expr (',' expr)* ')'\
+        | unop expr\
+        | '(' expr ')'\
+        | IDENTIFIER ('++'|'--')?\
+        | IDENTIFIER '(' expr (',' expr)* ')'\
 
 binop ::= '=' | '<' | '>=' | '==' | '!=' | '+' | '-' | '*' | '/' | '||' | '&&' | '|' | '&' | '^' | '<<' | '>>'
 
