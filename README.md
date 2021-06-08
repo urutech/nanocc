@@ -18,17 +18,19 @@ the route to bootstrapping is pretty much paved. This is the nano-c language I c
 ```
 program ::= (vardecl | fundecl)*
 
-vardecl ::= type '*'? IDENTIFIER ('[' NUMBER ']')? (',' '*'? IDENTIFIER ('[' NUMBER ']')?)* ';'\
-           | 'enum' IDENTIFIER? '{' IDENTIFIER ('=' NUMBER)?  (',' IDENTIFIER ('=' NUMBER)?)* '}' IDENTIFIER? ';'
+vardecl ::= type '*'? IDENTIFIER ('[' expr ']')? (',' '*'? IDENTIFIER ('[' expr ']')?)* ';'
+           | 'enum' IDENTIFIER? '{' IDENTIFIER ('=' expr)?  (',' IDENTIFIER ('=' expr)?)* '}' IDENTIFIER? ';'
 
-fundecl ::= type '*'? IDENTIFIER '(' args ')' (stmt | ';')
+fundecl ::= type '*'? IDENTIFIER '(' args ')' (stmtblock | ';')
 
-args ::= 'void' | type '*'? IDENTIFER ('[]')? (',' type '*'? IDENTIFER ('[]')?)*
+args ::= 'void' | type '*'? IDENTIFER ('[' ']')? (',' type '*'? IDENTIFER ('[' ']')?)*
+
+stmtblock ::= '{' vardecl* stmt* '}'
 
 stmt ::= 'if'  '(' expr ')' stmt ('else' stmt)?
        | 'while'  '(' expr ')' stmt
        | 'do' stmt 'while'  '(' expr ')' ';'
-       | '{' vardecl* stmt* '}'
+       | stmtblock
        | 'return'? expr? ';'
        | 'continue' ';'
        | 'break' ';'
@@ -40,11 +42,14 @@ expr ::= "Normal C expressions"
 
 
 Obviously this language would have some major restrictions:
-* No other data types besides int, char and void. No unsigned, short, struct or union.
+* No other data types besides int, char and void. No unsigned, short, float, double, struct or union.
 * Only pointer to basic types (int, char, void) or array of pointers
+* enums can only be used as names for constants, not as types
 * No multi dimensional array
 * No for-loops
 * No switch statement
 * No static keyword and therefore also no local variables with global storage class
 * No keywords such as register, volatile and the like
 * No goto and labels
+* No initialization not for global and nor for local variables
+* No sizeof
