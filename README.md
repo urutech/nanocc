@@ -122,7 +122,7 @@ cat nanocc.c elf32.c | ./nanocc_elfx86_elfx86 > nanocc_elfx86_elfx86-2
 diff nanocc_elfx86_elfx86 nanocc_elfx86_elfx86-2
 ```
 
-Expectation is that diff will not show any differences between the two. If that is the case, then nanocc was successfully able to reproduce itself. Obviously nanocc (result of the make proccess based on gcc) will not be identical to nanocc_elfx86_elfx86, because it was compiled by a different compiler.
+Expectation is that diff will not show any differences between the two. If diff does nit show any differences, then nanocc was successfully able to reproduce itself. Obviously nanocc (result of the make proccess based on gcc) will not be identical to nanocc_elfx86_elfx86, because it was compiled by a different compiler.
 
 ## Bootstrapping and cross compiling
 
