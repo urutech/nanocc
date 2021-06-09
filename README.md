@@ -90,7 +90,7 @@ In a way nano-c resembles the essence of C. Everything that is really typical in
 
 Like you would expect, calling make will build nanocc. After the make step, you will find a 32-bit executable in your working directory. The make step involves compiling of nanocc.c and elf32.c and linking the resulting .o files to the nanocc executable.
 
-ˋˋˋ
+```
 make
 ls
 elf32.c elf32.o Makefile nanocc.c nanocc.o nanocc pe32.c README.md
