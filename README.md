@@ -44,7 +44,7 @@ expr ::= "Normal C expressions"
 Obviously this language has some major restrictions:
 * No other data types besides int, char and void. No unsigned, short, float, double, struct or union.
 * Only pointer to basic types (int, char, void) or array of pointers
-* enums can only be used as names for constants, not as types
+* Enums can only be used as names for constants, not as types
 * No multi dimensional array
 * No for-loops
 * No switch statement
@@ -65,11 +65,11 @@ Not having the possibility to declare a variable and initialize it with a value 
 Talking about the type system. That is one int describing the type of a variable. The lower 8 bits are reserved for the base type (int, char or void) and the remaining 24 bits are flags indicating (among other things) ARRAY and/or POINTER.
 This is possible because only arrays of base type or pointer are allowed but not pointer to arrays. Therefore, if both flags are set (ARRAY and POINTER) then it is an array of pointers. And when only one of the two flags are set it's an array of a base type or a pointer to a base type, respectively.
 
-I've sort of rediscovered enums during the implmenetation of nanocc. Enums are easy to implement and they cover a lot of the functionality that many programmers leave to the preprocessor: constant values used throughout the code. ˋenum { MAX_SYMBOLS = 1024 };ˋ is a very good substitute for ˋ#define MAX_SYMBOLS 1024ˋ. By the way: all hash lines (starting with #) are treated like single line comments.
+I've sort of rediscovered enums during the implementation of nanocc. Enums are easy to implement and they cover a lot of the functionality that many programmers leave to the preprocessor: constant values used throughout the code. ˋenum { MAX_SYMBOLS = 1024 };ˋ is a very good substitute for ˋ#define MAX_SYMBOLS 1024ˋ. By the way: all hash lines (starting with #) are treated as single line comments.
 
-The reason not to support goto and labels is, besides the fact that they are unneeded to implement a compiler, that labels require to implement the parser with a lookahead of 2. I need to read the label and can only decide after reading the following token (':' or something else) if it really was a label or just an identifier. In order to keep parsing simple, I definitly wanted the nano-c grammar to be LL(1) to realize it as a recursive descent parser with only one lookahead token.
+The reason not to support goto and labels is, besides the fact that they are unneeded to implement a compiler, that labels require to implement the parser with a lookahead of 2. I need to read the potential label and can only decide after reading the following token (':' or something else) if it really was a label or just an identifier. In order to keep parsing simple, I definitly wanted the nano-c grammar to be LL(1) to realize it as a recursive descent parser with only one lookahead token.
 
-An exception of LL(1) is the expression parser, which is implemented as an operator precedence parser based on the shunting yard algorithm. That is the reason why the above listed grammer does only say "normal C expression". I think that the expression parser is pretty complete including recursive function calls, pointer and array arithmetic and pre- and postfix operations. What is not implemented is the comma operator (except in function arguments, of course), because that operaor is seldomly used besides in for loops. And that is also the reason to not implement for loops as well - and while and do/while are covering all loop types required.
+An exception of LL(1) is the expression parser, which is implemented as an operator precedence parser based on the shunting yard algorithm. That is the reason why the above listed grammer does only say "normal C expression". I think that the expression parser is pretty complete including recursive function calls, pointer and array arithmetic and pre- and postfix operations. What is not implemented is the comma operator (except in function arguments, of course), because that operaor is seldomly used besides in for loops. And that is also the reason to not implement for loops as well - and while and do/while are covering all loop types required. The expression parser does not work well in case of syntactically wrong expressions, but I did not test it much.
 
 ## Implementation design of nanocc
 
@@ -85,3 +85,14 @@ The generated executables consist of two segemnts: .text and .bss. Since we don'
 
 ## Essence of C
 In a way nano-c resembles the essence of C. Everything that is really typical in C like pointer arithmetic x[a] = *(x + a) with a being multiplied by the sizeof(*x) and the ++/-- pre- and postfix operators are identical in nano-c. When you take a look at the nanocc.c source file, it acually reads and smells like C. A couple of things are essential for C programs, that are misssing in nano-c: Initialization is more than syntactic sugar, because it reduces code by having initialized data. Also function pointers really are required to implement certain things. So there is some more work to be done to turn nanocc into a real C compiler. To learn how to write a compiler, compiler bootstrapping and as the basis for other projects this might be usedul for some people.
+
+## How to use
+
+Like you would expect, calling make will build nanocc. After the make step, you will find a 32-bit executable in your working directory. The make step involves compiling of nanocc.c and elf32.c and linking the resulting .o files to the nanocc executable.
+
+ˋˋˋ
+make
+ls
+elf32.c elf32.o Makefile nanocc.c nanocc.o nanocc pe32.c README.md
+ˋˋˋ
+
