@@ -77,14 +77,16 @@ nannocc is a nano-c compiler written in nano-c, that can compile itself. Of cour
 
 nanocc directly outputs binary code for the i386 32-bit processor in an elf executable format. Therefore is is only able to generate executables from single source files (like nanocc.c). The generated code is not optimized at all. In fact it is brain dead stupid code that resembles a stack machine. Every expression is realized like a stack machine would do it. `a = b + c` is compiled into something like `b c + a =` with every single instruction on the way popping the operands of the stack and pushing the result back on the stack. Ease of implementation and correct operation had much higher priority than optimization, for me.
 
-The compilers symbol table is nothing else than a few arrays (symbol_name, symbol_type, ...) with the index into those arrays being the symbol id throughout the compiler, usually called symidx. Adding a symbol to the symbol table incements the global symbol_count variable and searching a symbol visits all symbols from last (symbol_count-1) to first (0) and compare the symbol name. Usually this is a hash table implementation, but for reasons of simplicity here it is a flat array. Deleting a symbol is not possible, instead it is realized as overwriting symbol_name[symidx] with 0 so that it can not be found anymore. This turned out to be very effective when dealing with variable scope in nested stmtblocks. Since searching works from bottom to top: the innermost (last added) symbol is found first. And at the end of the stmtblock: all local variables, the ones whos index is equal or higher than the symbol_count at the beginning of the stmtblock, getting their name assigned to 0. 
+The compilers symbol table is nothing else than a few arrays (symbol_name, symbol_type, ...) with the index into those arrays being the symbol id throughout the compiler, usually called symidx. Adding a symbol to the symbol table incements the global symbol_count variable and searching a symbol visits all symbols from last (symbol_count-1) to first (0) and compare the symbol name. Usually this is a hash table implementation, but for reasons of simplicity here it is a flat array. Deleting a symbol is not possible, instead it is realized as overwriting symbol_name[symidx] with 0 so that it can not be found anymore. This turned out to be very effective when dealing with variable scope in nested stmtblocks. Since searching works from bottom to top: the innermost (last added) symbol is found first. And at the end of the stmtblock: all local variables, the ones whos index is equal or higher than the symbol_count at the beginning of the stmtblock, getting their name assigned to 0.
 
 Function calls work like usual: parameters are pushed on the stack from right to left and the stack frame uses EBP register with offsets +8 and above for parameters and with negative offsets for local variables.
 
 The generated executables consist of two segemnts: .text and .bss. Since we don't support initialied data, no .data segement is needed. The .bss segemnt is fixed to 8MB in size, which is big enough by far to hold all global variables of the compiler (and most other programs). Strings are part of .text segment (directly after the generated code).
 
+When you look into the soruce of nanocc.c, you will notice that most functions are either called lex_xxx, parse_xxx or gen_xxxx. The prefix lex, parse or gen denote what part of the compiler that function belongs to: the lexical analysis, the parser or the code generator.
+
 ## Essence of C
-In a way nano-c resembles the essence of C. Everything that is really typical in C like pointer arithmetic x[a] = *(x + a) with a being multiplied by the sizeof(*x) and the ++/-- pre- and postfix operators are identical in nano-c. When you take a look at the nanocc.c source file, it acually reads and smells like C. A couple of things are essential for C programs, that are misssing in nano-c: Initialization is more than syntactic sugar, because it reduces code by having initialized data. Also function pointers really are required to implement certain things. So there is some more work to be done to turn nanocc into a real C compiler. To learn how to write a compiler, compiler bootstrapping and as the basis for other projects this might be useful for some people.
+In a way nano-c resembles the essence of C. Everything that is really typical in C like pointer arithmetic x[a] = *(x + a) with a being multiplied by the sizeof(*x) and the ++/-- pre- and postfix operators are identical in nano-c. When you take a look at the nanocc.c source file, it acually reads and smells like C. A couple of things are essential for C programs, that are misssing in nano-c: Initialization is more than syntactic sugar, because it reduces code by having initialized data. Also function pointers really are required to implement certain things. So there is some more work to be done to turn nanocc into a real C compiler. To learn how to write a compiler, compiler bootstrapping and as the basis for other projects this might be anyway useful for some people.
 
 ## How to use
 
@@ -95,7 +97,7 @@ make
 ls
 elf32.c elf32.o Makefile nanocc.c nanocc.o nanocc pe32.c README.md
 ```
-It was said earlier that nanocc.c is a single source file and now we are compiling two files (nanocc.c and elf32.c)? In order to add a little flexibility, and to show how cross compilation can be done, the executable file format is put into a different file. But it can be concat to a single file. The following shows that:
+It was said earlier that nanocc.c is a single source file and now we are compiling two files (nanocc.c and elf32.c)? In order to add a little flexibility, and to show how cross compilation can be done, the executable file format generating part is put into a different file. But it can be concatenated to a single file. The following shows that:
 
 ```
 cat nanocc.c elf32.c | ./nanocc > nanocc_elfx86_elfx86
@@ -105,4 +107,38 @@ cat nanocc.c pe32.c | ./nanocc_elfx86_elfx86 > nanocc_elfx86_pex86
 cat nanocc.c pe32.c | ./nanocc_elfx86_pex86 > nanocc_pex86_pex86.exe
 ```
 
-The above commands do the following: 
+The above commands do the following:
+
+First we use nanocc to compile itself. The naming convention used throughout this paragraph is that *nanocc_rr_gg* denotes a compiler that executes on *rr* and generates *gg*. So, the first thing we need is a compiler that runs on x86 (32bit) linux (elfx86) that also generates code for the same platform. According to that naming convention, we want to have nanocc_elfx86_elfx86
+
+```
+cat nanocc.c elf32.c | ./nanocc > nanocc_elfx86_elfx86
+```
+
+Let's see if the new compiler can also generate itself:
+
+```
+cat nanocc.c elf32.c | ./nanocc_elfx86_elfx86 > nanocc_elfx86_elfx86-2
+diff nanocc_elfx86_elfx86 nanocc_elfx86_elfx86-2
+```
+
+Expectation is that diff will not show any differences between the two. If that is the case, then nanocc was successfully able to reproduce itself. Obviously nanocc (result of the make proccess based on gcc) will not be identical to nanocc_elfx86_elfx86, because it was compiled by a different compiler.
+
+## Bootstrapping and cross compiling
+
+Now the above mentioned flexibility helps to use a different "back end". It is not really a different back end according to compiler terminology, because the generation of x86 machine code can not be changed but the executable format in which the resulting code is packaged can be. I have implemented an alternative to elfx86.c for windows: **pe32.c**. PE stands for portable executable format and is the Microsoft format for exe files on windows. We can build a compiler that creates exe files with the following command:
+
+```
+cat nanocc.c pe32.c | ./nanocc_elfx86_elfx86 > nanocc_elfx86_pex86
+```
+
+We feed the same compiler source (nanocc.c) together with the different "back end" into nanocc_elfx86_elfx86. And since nanocc_elfx86_elfx86 can only generate code for elfx86 the resulting compiler will also only run on elfx86, but it will produce pe32 formatted output. That's why the new compiler we have generated is called nanocc_elfx86_pex86. We still run on linux but we have a cross compiler at hand that generates windows exe files. We use that:
+
+```
+cat nanocc.c pe32.c | ./nanocc_elfx86_pex86 > nanocc_pex86_pex86.exe
+```
+
+The resulting program is a nanoc-c compiler running on windows and it is called nanocc_pex86_pex86.exe. To test it, we of course need to run a Windows machine and test it there. Out of one set of source files we have created essentially three versions of the nano-c compiler:
+* nanocc_elfx86_elfx86: running on linux creating linux executables
+* nanocc_elfx86_pex86: running on linux creating Windows executables
+* nanocc_pex86_pex86.exe: running on Windows creating Windows executables
