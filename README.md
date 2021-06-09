@@ -138,7 +138,7 @@ We feed the same compiler source (nanocc.c) together with the different "back en
 cat nanocc.c pe32.c | ./nanocc_elfx86_pex86 > nanocc_pex86_pex86.exe
 ```
 
-The resulting program is a nanoc-c compiler running on windows and it is called nanocc_pex86_pex86.exe. To test it, we of course need to run a Windows machine and test it there. Out of one set of source files we have created essentially three versions of the nano-c compiler:
+The resulting program is a nano-c compiler running on windows and it is called nanocc_pex86_pex86.exe. To test it, we of course need to run a Windows machine and test it there. Out of one set of source files we have created essentially three versions of the nano-c compiler:
 * nanocc_elfx86_elfx86: running on linux creating linux executables
 * nanocc_elfx86_pex86: running on linux creating Windows executables
 * nanocc_pex86_pex86.exe: running on Windows creating Windows executables
