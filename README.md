@@ -58,9 +58,9 @@ Obviously this language has some major restrictions:
 * No type casts
 * No function pointers
 
-Seems like a lot of NOs. So what can that nano-c language do? Well, obviously it is possible to write a compiler for nano-c in nano-c. And the limitations are bearable. For example is the absence of structs much less of a deal than one would think. Instead of ˋsymbol[symidx].nameˋ it is ˋsymbol_name[symidx]ˋ. So I'm using as many array variable as a struct has members.
+Seems like a lot of NOs. So what can that nano-c language do? Well, obviously it is possible to write a compiler for nano-c in nano-c. And the limitations are bearable. For example is the absence of structs much less of a deal than one would think. Instead of `symbol[symidx].name` it is `symbol_name[symidx]`. So I'm using as many array variable as a struct has members.
 
-Not having the possibility to declare a variable and initialize it with a value at the same time is a disciplinary effort. Instead of ˋint x = 0;ˋ it is ˋint x; x = 0;ˋ. The reason for not implementing structs, multi dimensional arrays and initialization actually are related to each other. Initialization of variables requires quite some code. This is especially true to match the initialization in curly brackets to combinations of structs in struct of arrays ... So I left the work to do that once and for all when the full type system is in place. This is also the reason to not implement sizeof nor type casts.
+Not having the possibility to declare a variable and initialize it with a value at the same time is a disciplinary effort. Instead of `int x = 0;` it is `int x; x = 0;`. The reason for not implementing structs, multi dimensional arrays and initialization actually are related to each other. Initialization of variables requires quite some code. This is especially true to match the initialization in curly brackets to combinations of structs in struct of arrays ... So I left the work to do that once and for all when the full type system is in place. This is also the reason to not implement sizeof nor type casts.
 
 Talking about the type system. That is one int describing the type of a variable. The lower 8 bits are reserved for the base type (int, char or void) and the remaining 24 bits are flags indicating (among other things) ARRAY and/or POINTER.
 This is possible because only arrays of base type or pointer are allowed but not pointer to arrays. Therefore, if both flags are set (ARRAY and POINTER) then it is an array of pointers. And when only one of the two flags are set it's an array of a base type or a pointer to a base type, respectively.
@@ -77,7 +77,7 @@ nannocc is a nano-c compiler written in nano-c, that can compile itself. Of cour
 
 nanocc directly outputs binary code for the i386 32-bit processor in an elf executable format. Therefore is is only able to generate executables from single source files (like nanocc.c). The generated code is not optimized at all. In fact it is brain dead stupid code that resembles a stack machine. Every expression is realized like a stack machine would do it. `a = b + c` is compiled into something like `b c + a =` with every single instruction on the way popping the operands of the stack and pushing the result back on the stack. Ease of implementation and correct operation had much higher priority than optimization, for me.
 
-The compilers symbol table is nothing else than a few arrays (symbol_name, symbol_type, ...) with the index into those arrays being the symbol id throughout the compiler, usually called symidx. Adding a symbol to the symbol table incements the global symbol_count variable and searching a symbol visits all symbols from last (symbol_count-1) to first (0) and compare the symbol name. Deleting a symbol is not possible, instead it is realized as overwriting symbol_name[symidx] with 0 so that it can not be found anymore. This turned out to be very effective when dealing with variable scope in nested stmtblocks. Since searching works from bottom to top: the innermost (last added) symbol is found first. And at the end of the stmtblock: all local variables, the ones whos index is equal or higher than the symbol_count at the beginning of the stmtblock, getting their name assigned to 0. 
+The compilers symbol table is nothing else than a few arrays (symbol_name, symbol_type, ...) with the index into those arrays being the symbol id throughout the compiler, usually called symidx. Adding a symbol to the symbol table incements the global symbol_count variable and searching a symbol visits all symbols from last (symbol_count-1) to first (0) and compare the symbol name. Usually this is a hash table implementation, but for reasons of simplicity here it is a flat array. Deleting a symbol is not possible, instead it is realized as overwriting symbol_name[symidx] with 0 so that it can not be found anymore. This turned out to be very effective when dealing with variable scope in nested stmtblocks. Since searching works from bottom to top: the innermost (last added) symbol is found first. And at the end of the stmtblock: all local variables, the ones whos index is equal or higher than the symbol_count at the beginning of the stmtblock, getting their name assigned to 0. 
 
 Function calls work like usual: parameters are pushed on the stack from right to left and the stack frame uses EBP register with offsets +8 and above for parameters and with negative offsets for local variables.
 
@@ -95,4 +95,13 @@ make
 ls
 elf32.c elf32.o Makefile nanocc.c nanocc.o nanocc pe32.c README.md
 ```
+It was said earlier that nanocc.c is a single source file and now we are compiling two files (nanocc.c and elf32.c)? In order to add a little flexibility, and to show how cross compilation can be done, the executable file format is put into a different file. But it can be concat to a single file. The following shows that:
 
+```
+cat nanocc.c elf32.c | ./nanocc > nanocc_elfx86_elfx86
+cat nanocc.c elf32.c | ./nanocc_elfx86_elfx86 > nanocc_elfx86_elfx86-2
+diff nanocc_elfx86_elfx86 nanocc_elfx86_elfx86-2
+cat nanocc.c pe32.c | ./nanocc_elfx86_elfx86 > nanocc_elfx86_pex86
+```
+
+The above four commands do the following: 
