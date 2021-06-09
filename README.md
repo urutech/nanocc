@@ -102,6 +102,7 @@ cat nanocc.c elf32.c | ./nanocc > nanocc_elfx86_elfx86
 cat nanocc.c elf32.c | ./nanocc_elfx86_elfx86 > nanocc_elfx86_elfx86-2
 diff nanocc_elfx86_elfx86 nanocc_elfx86_elfx86-2
 cat nanocc.c pe32.c | ./nanocc_elfx86_elfx86 > nanocc_elfx86_pex86
+cat nanocc.c pe32.c | ./nanocc_elfx86_pex86 > nanocc_pex86_pex86.exe
 ```
 
-The above four commands do the following: 
+The above commands do the following: 
